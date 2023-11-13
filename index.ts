@@ -27,23 +27,12 @@ function generateRandomString(length = 6) {
 }
 
 function constructBind() {
-  // const bindCache = new Map<BindParam, string>();
   const bind: Record<string, BindParam> = {};
-  // let count = 0;
-  // function getBindCount() {
-  //   const key = `bind${count}`;
-  //   count++;
-
-  //   return key;
-  // }
 
   function addBind(value: BindParam, specificKey?: string) {
-    // const key = bindCache.get(value) || getBindCount();
     const key = specificKey || generateRandomString();
 
     bind[key] = value;
-
-    // bindCache.set(value, key);
 
     return `:${key}`;
   }
@@ -167,30 +156,5 @@ export function joinSql(constructors: ConstructorReturn[], joinString: string) {
       };
     },
     { query: "", bind: {} } as ConstructorReturn
-  );
-}
-
-function concatBind(
-  bind1: Record<string, BindParam>,
-  { query, bind }: ConstructorReturn
-): ConstructorReturn {
-  const bindKeys = Object.keys(bind1);
-  return Object.keys(bind).reduce(
-    (acc, bindItem, index) => {
-      const key = `bind${index + bindKeys.length}`;
-      const parsedQuery = acc.query.replace(new RegExp(bindItem, "g"), key);
-      console.log({ bindItem, key });
-      console.log("query", acc.query);
-      console.log("parsed", parsedQuery);
-
-      return {
-        query: parsedQuery,
-        bind: {
-          ...acc.bind,
-          [key]: bind[bindItem],
-        },
-      };
-    },
-    { bind: bind1, query }
   );
 }
